@@ -10,7 +10,6 @@ import { Link } from "react-router";
 
 export default function ProjectList() {
    
-
    return (
         <Page title="Project List" icon={<Folder/>}>
            <ListView search={<SearchForm/>}>
