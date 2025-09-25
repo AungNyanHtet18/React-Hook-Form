@@ -5,33 +5,46 @@ import Page from "@/components/custom/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { ProjectSearch } from "@/lib/model/input/project-search";
+import type { ProjectListItem } from "@/lib/model/output/project-list-item";
 import { ArrowRight, Folder, Plus, Search } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 export default function ProjectList() {
    
+   const [list, setList] = useState<ProjectListItem[]>()
+
+   async function search(form: ProjectSearch) {
+       
+   }
+
    return (
         <Page title="Project List" icon={<Folder/>}>
-           <ListView search={<SearchForm/>}>
-               <ResultTable/>
-           </ListView>
+           <ListView search={<SearchForm search={search} />}>
+               <ResultTable list={list} />
+           </ListView >
         </Page>
      )
 }
 
-function SearchForm() {
+function SearchForm({search} : {search : (form:ProjectSearch) => void}) {
+
+   const {register, handleSubmit} = useForm<ProjectSearch>()
+
     return (
-         <form className="flex gap-2">
+         <form onSubmit={handleSubmit(search)} className="flex gap-2">
                <FormGroup label="Start From">
-                  <Input type="date" />
+                  <Input {...register('startFrom')} type="date" />
                </FormGroup>
 
                <FormGroup label="Start To">
-                  <Input type="date" />
+                  <Input {...register('startTo')} type="date" />
                </FormGroup>
 
                <FormGroup className="w-1/4" label="Keyword">
-                  <Input type="text" placeholder="Search Keyword" />
+                  <Input {...register('keyword')} type="text" placeholder="Search Keyword" />
                </FormGroup>
 
                <ButtonWrapper>
@@ -49,7 +62,14 @@ function SearchForm() {
     )
 }
 
-function ResultTable() {
+function ResultTable({list} : {list : ProjectListItem[] | undefined}) {
+
+   if(typeof  list == undefined) {
+       return (
+          <div>There is no data </div>
+       )
+   }
+
     return (
       <Table className="border border-solid" >
          <TableHeader>
