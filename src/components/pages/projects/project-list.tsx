@@ -5,19 +5,32 @@ import Page from "@/components/custom/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { searchProject } from "@/lib/client/project-client";
 import type { ProjectSearch } from "@/lib/model/input/project-search";
 import type { ProjectListItem } from "@/lib/model/output/project-list-item";
 import { ArrowRight, Folder, Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 export default function ProjectList() {
    
-   const [list, setList] = useState<ProjectListItem[]>()
+   const [list, setProjectList] = useState<ProjectListItem[] | undefined>(undefined)
+
+   useEffect(()=> {
+      
+      async function search(){
+         const projectSearch = await searchProject(undefined)
+         setProjectList(projectSearch)
+      }
+
+      search()
+
+   },[])
 
    async function search(form: ProjectSearch) {
-       
+       const projectSearch = await searchProject(form)
+      setProjectList(projectSearch)
    }
 
    return (
@@ -64,9 +77,9 @@ function SearchForm({search} : {search : (form:ProjectSearch) => void}) {
 
 function ResultTable({list} : {list : ProjectListItem[] | undefined}) {
 
-   if(typeof  list == undefined) {
+   if( list ==  undefined) {
        return (
-          <div>There is no data </div>
+          <div className="border-1 rounded-2xl p-2 w-2/3  text-2xl text-red-500 font-bold">There is no project </div>
        )
    }
 
@@ -84,18 +97,21 @@ function ResultTable({list} : {list : ProjectListItem[] | undefined}) {
          </TableHeader>
 
          <TableBody>
-            <TableRow>
-               <TableCell>1</TableCell>
-               <TableCell>Sample Project</TableCell>
-               <TableCell>2025-07-11</TableCell>
-               <TableCell>2025-10-30</TableCell>
-               <TableCell className="text-end" >35</TableCell>
-               <TableCell className="flex justify-center">
-                  <Link to={`/project/1`}>
-                     <ArrowRight/>
-                  </Link>
-               </TableCell>
-            </TableRow>
+               {list.map(project => 
+               <TableRow key={project.id}>
+                  <TableCell>{project.id}</TableCell>
+                  <TableCell>{project.name}</TableCell>
+                  <TableCell>{project.startDate}</TableCell>
+                  <TableCell>{project.dueDate}</TableCell>
+                  <TableCell className="text-end" >{project.tasks}</TableCell>
+                  <TableCell className="flex justify-center">
+                     <Link to={`/project/${project.id}`}>
+                        <ArrowRight/>
+                     </Link>
+                  </TableCell>
+               </TableRow>
+               )}
+            
          </TableBody>
       </Table>
     )

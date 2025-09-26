@@ -4,6 +4,7 @@ import Page from "@/components/custom/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { createProject } from "@/lib/client/project-client";
 import type { ProjectForm } from "@/lib/model/input/project-form";
 import { Pencil, Save } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -15,8 +16,9 @@ export default function ProjectEdit() {
     const navigate = useNavigate()
 
     const save = (form: ProjectForm)=> {
-         console.log(form);
-         navigate('/project')
+         console.log(form)
+         const response = createProject(form)
+         navigate(`/project`)
     }
 
      return (
