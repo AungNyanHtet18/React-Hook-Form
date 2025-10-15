@@ -15,16 +15,15 @@ import { Link } from "react-router";
 
 export default function ProjectList() {
    
-   const [list, setProjectList] = useState<ProjectListItem[] | undefined>(undefined)
+   const [list, setProjectList] = useState<ProjectListItem[]>([])
 
    useEffect(()=> {
-      
-      async function search(){
-         const projectSearch = await searchProject(undefined)
-         setProjectList(projectSearch)
+      async function load(){
+         const result = await searchProject({})
+         setProjectList(result)
       }
 
-      search()
+      load()
 
    },[])
 
@@ -34,13 +33,14 @@ export default function ProjectList() {
    }
 
    return (
-        <Page title="Project List" icon={<Folder/>}>
-           <ListView search={<SearchForm search={search} />}>
-               <ResultTable list={list} />
-           </ListView >
-        </Page>
+        <Page title="Project List" icon={<Folder/>}> 
+           <ListView search={<SearchForm search={search} />}> 
+               <ResultTable list={list} /> 
+           </ListView > 
+        </Page> 
      )
 }
+
 
 function SearchForm({search} : {search : (form:ProjectSearch) => void}) {
 

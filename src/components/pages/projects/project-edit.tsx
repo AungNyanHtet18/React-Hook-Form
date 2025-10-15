@@ -15,9 +15,9 @@ export default function ProjectEdit() {
     const {handleSubmit, register, formState : {errors}} = useForm<ProjectForm>()
     const navigate = useNavigate()
 
-    const save = (form: ProjectForm)=> {
+    async function save (form: ProjectForm) {
          console.log(form)
-         const response = createProject(form)
+         const response = await createProject(form)
          navigate(`/project`)
     }
 
