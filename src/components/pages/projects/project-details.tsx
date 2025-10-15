@@ -5,7 +5,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { projectDetails } from "@/lib/client/project-client";
 import type { ProjectDetail } from "@/lib/model/output/project-detail";
 import type { TaskListItem } from "@/lib/model/output/task-list-item";
-import { AlertCircle, AlertCircleIcon, Files, FileStack, Folder, Plus, Table } from "lucide-react";
+import { AlertCircleIcon, Files, Folder, Plus, Table } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
