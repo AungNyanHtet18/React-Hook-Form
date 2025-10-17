@@ -4,25 +4,53 @@ import Page from "@/components/custom/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createProject } from "@/lib/client/project-client";
+import { createProject, projectDetails, upDateProject } from "@/lib/client/project-client";
 import type { ProjectForm } from "@/lib/model/input/project-form";
 import { Pencil, Save } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 export default function ProjectEdit() {
 
-    const {handleSubmit, register, formState : {errors}} = useForm<ProjectForm>()
+    const {handleSubmit, register, reset, formState : {errors}} = useForm<ProjectForm>()
     const navigate = useNavigate()
 
+    const [params] = useSearchParams()
+    const id = params.get("id")
+
+
+    useEffect(() => { 
+        async function load() {
+            if(id) {
+                 const response = await projectDetails(id)
+                 reset({
+                    name : response.name,
+                    startDate : response.startDate,
+                    dueDate : response.dueDate,
+                    description : response.details
+                 })
+            }
+        }
+
+        load()
+
+    }, [id, reset])
+
     async function save (form: ProjectForm) {
-         console.log(form)
-         const response = await createProject(form)
-         navigate(`/project`)
+
+        console.log(form)
+
+        if(id) { 
+            await upDateProject(id, form)
+        } else { 
+            await createProject(form)
+        }
+           navigate(`/project`)
     }
 
      return (
-        <Page title="Project Edit" icon={<Pencil/>}>
+        <Page title={id ? "Edit Project" : "Creat Project"} icon={<Pencil/>}>
             <form onSubmit={handleSubmit(save)} className="w-1/2">
                 <FormGroup className="mb-4" label="Project Name">
                     <Input {...register('name',{required: true})} placeholder="Enter Project Name" />

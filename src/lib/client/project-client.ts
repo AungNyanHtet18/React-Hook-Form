@@ -6,21 +6,21 @@ import type { ProjectListItem } from "../model/output/project-list-item";
 import { restClient } from "../utils";
 
 export async function createProject(form: ProjectForm): Promise<ModificationResult<number>> {
-     const response = await restClient().post('projects',form)
+     const response = await restClient().post('/projects',form)
      return response.data
 }
 
-export async function upDateProject(id: number, form: ProjectForm): Promise<ModificationResult<number>> {
-      const response = await restClient().put(`projects/${id}`,form)
+export async function upDateProject(id: unknown, form: ProjectForm): Promise<ModificationResult<number>> {
+      const response = await restClient().put(`/projects/${id}`,form)
       return response.data
 }
 
 export async function searchProject(search: ProjectSearch): Promise<ProjectListItem[]> {
-     const response = await restClient().get('projects',{params: search})
+     const response = await restClient().get('/projects',{params: search})
      return response.data
 }
 
 export async function  projectDetails(id: unknown): Promise<ProjectDetail> {
-      const response = await restClient().get(`projects/${id}`) 
+      const response = await restClient().get(`/projects/${id}`) 
       return response.data
 }

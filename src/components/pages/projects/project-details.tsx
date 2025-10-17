@@ -1,13 +1,12 @@
 import Page from "@/components/custom/page";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { projectDetails } from "@/lib/client/project-client";
 import type { ProjectDetail } from "@/lib/model/output/project-detail";
-import type { TaskListItem } from "@/lib/model/output/task-list-item";
-import { AlertCircleIcon, Files, Folder, Plus, Table } from "lucide-react";
+
+import { Calendar, Files, Folder, Info, Pencil, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Outlet, useNavigate, useParams } from "react-router";
 
 export default function ProjectDetails() {
     
@@ -36,13 +35,13 @@ export default function ProjectDetails() {
 
     return (
       <Page icon={<Folder/>} title="Project Details">
-           <div className="flex gap-4">
-                <div className="w-1/5">
+           <div className="flex gap-6">
+                <div className="w-1/4">
                     <ProjectInfo info={details} />
                 </div>
 
-                <div className="w-4/5">
-                    <TasksInProject list={details.tasks} />
+                <div className="w-3/4">
+                    <TasksInProject  />
                 </div>
            </div>
       </Page>
@@ -51,43 +50,74 @@ export default function ProjectDetails() {
 
 
 function ProjectInfo({info} : {info : ProjectDetail}) {
+
+    const navigate = useNavigate()
+
+    function edit(id: unknown) {
+        navigate(`/project/edit?id=${id}`)         
+    }
+
      return (
         <>
             <Card className="mb-2">
                 <CardHeader>
-                    <CardTitle>{info.name}</CardTitle>
+                    <CardTitle className="flex items-center"><Info className="me-2"/> {info.name}</CardTitle>
 
                     <CardDescription>{info.details}</CardDescription>
-
                 </CardHeader>
+
+                <CardContent>
+                    <ProjectInfoItem name= "Start At" value= {info.startDate}/>
+                    <ProjectInfoItem name= "Due Date" value= {info.dueDate} />
+                
+                  <div>
+                    <Button onClick={() => edit(info.id)} className="w-full">
+                        <Pencil /> Edit Project
+                    </Button>
+                  </div>
+                </CardContent>
             </Card>
         </>
      )
 }
 
 
-function TasksInProject({list} : {list : TaskListItem[]}) { 
+function ProjectInfoItem({name, value} : {name: string, value?: string}) {
+     return (
+        <div className="flex gap-4 mb-3">
+
+             <Calendar/>
+            <div className="mb-3">
+                <div className="text-gray-500  text-sm">{name}</div>
+                <div>{value}</div>
+            </div>
+        </div>
+     )
+}
+
+
+function TasksInProject() { 
     return (
         <>
-           <h1 className="flex text-lg items-center justify-between mb-3">
-               <div className="flex items-center">
-                    <Files className="me-2"/> Tasks in Project
-               </div>
+            <Card className="mb-2">
+                <CardHeader>
+                    <CardTitle className="flex justify-between">
+                        <div className="flex items-center">
+                            <Files className="me-2"/> Tasks in Project
+                        </div>
 
-               <Button><Plus/>Add New Task</Button>
-           </h1>
+                        <Button><Plus/>Add New Task</Button>
+                    </CardTitle>
 
-           {!list.length ? 
-            <Alert>
-                <AlertCircleIcon/>
-                <AlertTitle>Message</AlertTitle>
-                <AlertDescription>There is no tasks, Please add task to Projects.</AlertDescription>
-            </Alert> :
+                </CardHeader>
 
-            <Table>
-                 
-            </Table> 
-           }
+                <CardContent>
+                    <Outlet />
+
+                </CardContent>
+            </Card>
+
+
         </>
     )
 }

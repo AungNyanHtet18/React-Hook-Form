@@ -19,7 +19,10 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<ProjectList/>} />
               <Route path='project' element={<ProjectList/>} />
               <Route path='project/edit' element={<ProjectEdit/>} />
-              <Route path='project/:id' element={<ProjectDetails/>} /> 
+              <Route path='project/:id' element={<ProjectDetails/>} > 
+                  <Route index element={<TaskList/>} />
+              </Route>
+              
               <Route path='task' element={<TaskList/>} />
               <Route path='task/edit' element={<TaskEdit/>} />
               <Route path='task/:id' element={<TaskDetails/>} />
