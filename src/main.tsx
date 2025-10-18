@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-
 import { BrowserRouter, Route, Routes } from 'react-router'
 import App from './App'
 import ProjectList from './components/pages/projects/project-list.tsx'
@@ -25,7 +24,7 @@ createRoot(document.getElementById('root')!).render(
               
               <Route path='task' element={<TaskList/>} />
               <Route path='task/edit' element={<TaskEdit/>} />
-              <Route path='task/:id' element={<TaskDetails/>} />
+              <Route path='task/:taskId' element={<TaskDetails/>} />
           </Route> 
        </Routes>
     </BrowserRouter>

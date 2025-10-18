@@ -70,11 +70,12 @@ function ProjectInfo({info} : {info : ProjectDetail}) {
                     <ProjectInfoItem name= "Start At" value= {info.startDate}/>
                     <ProjectInfoItem name= "Due Date" value= {info.dueDate} />
                 
-                  <div>
-                    <Button onClick={() => edit(info.id)} className="w-full">
-                        <Pencil /> Edit Project
-                    </Button>
-                  </div>
+                    <div>
+                        <Button onClick={() => edit(info.id)} className="w-full">
+                            <Pencil /> Edit Project
+                        </Button>
+                    </div>
+
                 </CardContent>
             </Card>
         </>
@@ -86,7 +87,8 @@ function ProjectInfoItem({name, value} : {name: string, value?: string}) {
      return (
         <div className="flex gap-4 mb-3">
 
-             <Calendar/>
+            <Calendar/>
+
             <div className="mb-3">
                 <div className="text-gray-500  text-sm">{name}</div>
                 <div>{value}</div>
@@ -108,16 +110,12 @@ function TasksInProject() {
 
                         <Button><Plus/>Add New Task</Button>
                     </CardTitle>
-
                 </CardHeader>
 
                 <CardContent>
                     <Outlet />
-
                 </CardContent>
             </Card>
-
-
         </>
     )
 }
