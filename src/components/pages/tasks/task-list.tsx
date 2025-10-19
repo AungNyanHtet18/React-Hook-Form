@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormGroup from "@/components/custom/form-group";
 import { Input } from "@/components/ui/input";
 import { Link, useParams } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ButtonWrapper from "@/components/custom/button-wrapper";
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
+import { ArrowRight, Plus, Search } from "lucide-react";
 import { TaskSearchSchema, type TaskSearch } from "@/lib/model/schema/task-search";
 import { searchTask } from "@/lib/client/task-client";
 import type { TaskListItem } from "@/lib/model/output/task-list-item";
@@ -34,16 +34,19 @@ function SearchForm({search} : {search: (form: TaskSearch)=> void}) {
     const {id} = useParams()
     const {register, handleSubmit, resetField} = useForm<TaskSearch>({resolver: zodResolver(TaskSearchSchema)})
 
+    const formRef = useRef<HTMLFormElement | null>(null)
+
     useEffect(()=> {
 
       if(id) {
         resetField('projectId', {defaultValue : id})   
+        formRef.current?.requestSubmit()
       }
       
    }, [id, resetField])
 
      return (
-         <form onSubmit={handleSubmit(search)} className="flex gap-2">
+         <form ref={formRef} onSubmit={handleSubmit(search)} className="flex gap-2">
 
                <Input type= "hidden"  {...register('projectId')} />
                
@@ -65,7 +68,7 @@ function SearchForm({search} : {search: (form: TaskSearch)=> void}) {
                    </Button>
 
                    <Button asChild className="ms-1">
-                       <Link to={``}>
+                       <Link to={`/project/${id}/task/edit`}>
                            <Plus /> Create Task
                        </Link>
                    </Button>
@@ -76,6 +79,10 @@ function SearchForm({search} : {search: (form: TaskSearch)=> void}) {
 
 function ResultTable({list} : {list: TaskListItem[]}) {
     
+  const {id} = useParams()
+     
+
+
   if(list.length == 0 ) { 
       return (
             <div className="border-1 rounded-2xl p-2 w-2/3 text-2xl  text-red-500 font-bold mt-2">
@@ -87,27 +94,28 @@ function ResultTable({list} : {list: TaskListItem[]}) {
         <Table className="border border-solid mt-2">
             <TableHeader>
                 <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Project Id</TableHead>
-                    <TableHead>Project</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Assignee</TableHead>
                     <TableHead>Due Date</TableHead>
                     <TableHead>Start Date</TableHead>
                     <TableHead>End Date</TableHead>
+                    <TableHead></TableHead>
                 </TableRow>
             </TableHeader>
 
              <TableBody>
                 {list.map(task =>
                 <TableRow key={task.id}>
-                    <TableCell>{task.id}</TableCell>
-                    <TableCell>{task.projectId}</TableCell>
-                    <TableCell>{task.project}</TableCell>
+                    <TableCell>{task.name}</TableCell>
                     <TableCell>{task.assignee}</TableCell>
                     <TableCell>{task.dueDate}</TableCell>
                     <TableCell>{task.startDate}</TableCell>
                     <TableCell>{task.endDate}</TableCell>
+                    <TableCell>
+                        <Link to={`/project/${id}/task/${task.id}`}>
+                           <ArrowRight/>
+                        </Link>
+                    </TableCell>
                 </TableRow>
                 )}
              </TableBody>

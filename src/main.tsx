@@ -20,11 +20,9 @@ createRoot(document.getElementById('root')!).render(
               <Route path='project/edit' element={<ProjectEdit/>} />
               <Route path='project/:id' element={<ProjectDetails/>} > 
                   <Route index element={<TaskList/>} />
+                  <Route path='task/edit' element={<TaskEdit/>} />
+                  <Route path='task/:taskId' element={<TaskDetails/>} />
               </Route>
-              
-              <Route path='task' element={<TaskList/>} />
-              <Route path='task/edit' element={<TaskEdit/>} />
-              <Route path='task/:taskId' element={<TaskDetails/>} />
           </Route> 
        </Routes>
     </BrowserRouter>

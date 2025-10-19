@@ -107,7 +107,6 @@ function TasksInProject() {
                         <div className="flex items-center">
                             <Files className="me-2"/> Tasks in Project
                         </div>
-
                     </CardTitle>
                 </CardHeader>
 
