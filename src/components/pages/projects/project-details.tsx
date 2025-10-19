@@ -103,12 +103,11 @@ function TasksInProject() {
         <>
             <Card className="mb-2">
                 <CardHeader>
-                    <CardTitle className="flex justify-between">
+                    <CardTitle>
                         <div className="flex items-center">
                             <Files className="me-2"/> Tasks in Project
                         </div>
 
-                        <Button><Plus/>Add New Task</Button>
                     </CardTitle>
                 </CardHeader>
 
