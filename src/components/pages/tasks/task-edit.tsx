@@ -3,36 +3,61 @@ import FormGroup from "@/components/custom/form-group"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { createTask } from "@/lib/client/task-client"
+import { createTask, findTaskById, updateTask } from "@/lib/client/task-client"
 import { TaskEditSchema, type TaskEditForm } from "@/lib/model/schema/task-search"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Save } from "lucide-react"
+import { List, Save } from "lucide-react"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate, useParams } from "react-router"
+import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
 export default function TaskEdit() {
 
    const {id} = useParams()
-   const {register, handleSubmit,  resetField, formState: {errors}} = useForm<TaskEditForm>({resolver : zodResolver(TaskEditSchema)})
+   const [queries] = useSearchParams()
+   const taskId = queries.get('taskId')
 
+   const {register, handleSubmit,  reset, formState: {errors}} = useForm<TaskEditForm>({resolver : zodResolver(TaskEditSchema)})
    const navigate = useNavigate()
 
    useEffect(()=> { 
        
       if(id) {
-          resetField('projectId', {defaultValue: id})
+          reset({
+              projectId: id
+          })
       }
 
-   }, [id, resetField])
+   }, [id, reset])
+
+   useEffect(()=>{
+     async function load(id: unknown) {
+          const response = await findTaskById(id)
+          console.log(response)
+          reset({
+               projectId: response.projectListItem?.id.toString(),
+               name: response.name,
+               assignee: response.assignee,
+               dueDate: response.dueDate,
+               startDate: response.startDate,
+               endDate: response.endDate,
+               description: response.description
+          })
+     }
+
+     if(taskId) {
+           load(taskId)
+     }
+
+   },[taskId, reset])
+
 
    async function save(form: TaskEditForm) {
-       console.log(form)
-       const response = await createTask(form)
-
+       const response = taskId ?  await updateTask(taskId, form) : await createTask(form)
+        
        if(response.success) {
-            navigate(`/project/${id}`)
-       }
+          navigate(`/project/${id}`)
+       } 
    } 
 
      return (
@@ -72,9 +97,18 @@ export default function TaskEdit() {
                  <Textarea {...register('description')} placeholder="Enter Description" />
             </FormGroup>
 
-            <Button type="submit">
-               <Save /> Save Task
-            </Button>
+            <div>
+               <Button type="button" asChild>
+                    <Link to= {`/project/${id}`}>
+                        <List/> Task List
+                    </Link>
+               </Button>
+
+               <Button className="ms-2" type="submit">
+                    <Save /> Save Task
+               </Button>
+            </div>
+
        </form>
      )
 }
